@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": "postgresql://neondb_owner:npg_fx3wcJt7bsTF@ep-cool-band-a175ktje-pooler.ap-southeast-1.aws.neon.tech/attreo?sslmode=require",
+    "GEMINI_API_KEY": "AIzaSyCjCNFH1f0I0Nb8CcxfL_YkQ86vSN5PrDo",
+    "NEXT_PUBLIC_APP_URL": "http://localhost:3000",
+    "IMGBB_API_KEY": "9521d8d0ca7e691061636e6d61830d79"
+  },
+  "installCommand": "npm install --platform=linux --arch=x64"
+} 

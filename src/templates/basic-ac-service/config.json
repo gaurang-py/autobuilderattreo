@@ -1,0 +1,13 @@
+{
+  "id": "basic-ac-service",
+  "name": "Basic AC Service",
+  "description": "A clean, professional template for AC service companies with sections for services, about us, and contact information.",
+  "thumbnail": "/templates/basic-ac-service/thumbnail.svg",
+  "features": [
+    "Responsive design",
+    "Services showcase",
+    "Contact form",
+    "Professional color scheme"
+  ],
+  "primaryColor": "#2563eb"
+} 

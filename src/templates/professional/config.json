@@ -1,0 +1,15 @@
+{
+  "id": "professional",
+  "name": "Professional",
+  "description": "A modern, sleek template for professional businesses with elegant design and comprehensive sections.",
+  "thumbnail": "/templates/professional/thumbnail.svg",
+  "features": [
+    "Modern responsive design",
+    "Hero section with call-to-action",
+    "Services showcase",
+    "Team members section",
+    "Testimonials carousel",
+    "Contact form with map"
+  ],
+  "primaryColor": "#1e40af"
+} 
