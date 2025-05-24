@@ -77,12 +77,12 @@ export default function ManageSites({ tenants, isLoading, onDeleteTenant }: Mana
                           <div className="font-medium text-gray-900">{tenant.companyName}</div>
                           <div className="text-blue-600 hover:text-blue-800 transition-colors duration-150">
                             <a 
-                              href={`http://${tenant.slug}.localhost:3000`} 
+                              href={`https://${tenant.slug}.servicecenterkolkata24x7.com`} 
                               target="_blank"
                               rel="noopener noreferrer"
                               className="flex items-center"
                             >
-                              {tenant.slug}.localhost:3000
+                              {tenant.slug}.servicecenterkolkata24x7.com
                               <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                               </svg>
@@ -102,7 +102,7 @@ export default function ManageSites({ tenants, isLoading, onDeleteTenant }: Mana
                     <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                       <div className="flex justify-end space-x-4">
                         <a 
-                          href={`http://${tenant.slug}.localhost:3000`} 
+                          href={`https://${tenant.slug}.servicecenterkolkata24x7.com`} 
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 hover:text-blue-900 flex items-center transition-colors duration-150"

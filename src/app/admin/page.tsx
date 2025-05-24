@@ -179,7 +179,7 @@ export default function AdminPage() {
       }
 
       const result = await response.json();
-      router.push(`http://${data.slug}.localhost:3000`);
+      router.push(`https://${data.slug}.servicecenterkolkata24x7.com`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

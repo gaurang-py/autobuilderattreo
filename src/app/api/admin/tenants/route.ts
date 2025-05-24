@@ -1,10 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
-import { mkdir } from 'fs/promises';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+
+// Upload image to ImageBB
+async function uploadToImageBB(imageData: string) {
+  try {
+    // Extract base64 data if it's a data URL
+    const base64Data = imageData.startsWith('data:') 
+      ? imageData.split(',')[1] 
+      : imageData;
+    
+    // If it's already a URL (not a base64 string), return it as is
+    if (imageData.startsWith('http')) {
+      return imageData;
+    }
+    
+    const apiKey = process.env.IMAGEBB_API_KEY;
+    if (!apiKey) {
+      throw new Error('ImageBB API key not configured');
+    }
+    
+    const formData = new FormData();
+    formData.append('image', base64Data);
+    
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) {
+      throw new Error(`ImageBB API error: ${response.status} ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return data.data.url;
+  } catch (error) {
+    console.error('Error uploading image to ImageBB:', error);
+    throw error;
+  }
+}
 
 export async function GET() {
   try {
@@ -94,9 +129,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create upload directory for any local files we might need
-    const uploadDir = join(process.cwd(), 'public', 'uploads', slug);
-    await mkdir(uploadDir, { recursive: true });
+    // Upload images to ImageBB if they are base64 data
+    let uploadedLogoUrl = logoUrl;
+    let uploadedFaviconUrl = faviconUrl;
+    let uploadedWebsiteImageUrl = websiteImageUrl;
+
+    try {
+      if (logoUrl && logoUrl.startsWith('data:')) {
+        uploadedLogoUrl = await uploadToImageBB(logoUrl);
+      }
+      
+      if (faviconUrl && faviconUrl.startsWith('data:')) {
+        uploadedFaviconUrl = await uploadToImageBB(faviconUrl);
+      }
+      
+      if (websiteImageUrl && websiteImageUrl.startsWith('data:')) {
+        uploadedWebsiteImageUrl = await uploadToImageBB(websiteImageUrl);
+      }
+    } catch (error: any) {
+      console.error('Error uploading images:', error);
+      return NextResponse.json(
+        { error: `Failed to upload images: ${error.message}` },
+        { status: 500 }
+      );
+    }
 
     // Generate content using AI
     const contentPrompt = `Create content for a website for a company called "${companyName}"${industry ? ` in the ${industry} industry` : ''}. 
@@ -176,8 +232,8 @@ export async function POST(request: NextRequest) {
             slug,
             companyName,
             template,
-            logoUrl,
-            favicon: faviconUrl || null,
+            logoUrl: uploadedLogoUrl,
+            favicon: uploadedFaviconUrl || null,
             industry: industry || null,
             settings: {},
             themeColors: themeColors || undefined,
@@ -197,7 +253,7 @@ export async function POST(request: NextRequest) {
               title: seoTitle || companyName,
               description: seoDescription || '',
               keywords: seoKeywords || '',
-              ogImage: websiteImageUrl || null,
+              ogImage: uploadedWebsiteImageUrl || null,
             }
           });
         }
@@ -211,7 +267,7 @@ export async function POST(request: NextRequest) {
             aboutUs: websiteContent.aboutUs,
             services: JSON.stringify(services) as any, // Convert to JSON string for Prisma
             contactBlurb: websiteContent.contactBlurb,
-            websiteImageUrl: websiteImageUrl || null,
+            websiteImageUrl: uploadedWebsiteImageUrl || null,
           },
         });
 

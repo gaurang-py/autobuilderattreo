@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaCheck } from 'react-icons/fa';
+import Head from 'next/head';
 
 interface Service {
   title: string;
@@ -26,6 +27,8 @@ interface ProfessionalTemplateProps {
   contactEmail?: string;
   contactPhone?: string;
   contactAddress?: string;
+  metaDescription?: string;
+  metaKeywords?: string;
 }
 
 export default function ProfessionalTemplate({
@@ -46,6 +49,8 @@ export default function ProfessionalTemplate({
   contactEmail = '',
   contactPhone = '',
   contactAddress = '',
+  metaDescription = '',
+  metaKeywords = '',
 }: ProfessionalTemplateProps) {
   const [formData, setFormData] = useState({
     name: '',
@@ -59,6 +64,14 @@ export default function ProfessionalTemplate({
     isSubmitted: false,
     error: '',
   });
+
+  // Default meta description if not provided
+  const seoDescription = metaDescription || `${companyName} - ${tagline}`;
+  // Default meta keywords if not provided
+  const seoKeywords = metaKeywords || `${companyName}, ${services.map(s => s.title).join(', ')}`;
+  
+  // Format phone number for href
+  const formattedPhone = contactPhone ? contactPhone.replace(/[^\d+]/g, '') : '';
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -86,6 +99,17 @@ export default function ProfessionalTemplate({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.message || !tenantSlug) {
+      setFormStatus({
+        isSubmitting: false,
+        isSubmitted: false,
+        error: 'Please fill in all required fields (Name, Email, and Message)',
+      });
+      return;
+    }
+
     setFormStatus({ isSubmitting: true, isSubmitted: false, error: '' });
 
     try {
@@ -185,11 +209,60 @@ export default function ProfessionalTemplate({
     .focus\\:ring-accent-color:focus {
       --tw-ring-color: var(--accent-color);
     }
+    
+    .floating-call-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--accent-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+    
+    .floating-call-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    }
   `;
 
   return (
     <div className="min-h-screen bg-gray-50" style={themeStyles}>
+      <Head>
+        <title>{companyName} - {tagline}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords} />
+        <meta property="og:title" content={`${companyName} - ${tagline}`} />
+        <meta property="og:description" content={seoDescription} />
+        {websiteImageUrl && <meta property="og:image" content={websiteImageUrl} />}
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${companyName} - ${tagline}`} />
+        <meta name="twitter:description" content={seoDescription} />
+        {websiteImageUrl && <meta name="twitter:image" content={websiteImageUrl} />}
+      </Head>
+      
       <style jsx global>{globalCss}</style>
+      
+      {/* Floating Call Button */}
+      {contactPhone && (
+        <a 
+          href={`tel:${formattedPhone}`}
+          className="floating-call-button"
+          aria-label="Call us"
+          title={`Call ${companyName}: ${contactPhone}`}
+        >
+          <FaPhone size={24} />
+        </a>
+      )}
+      
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">

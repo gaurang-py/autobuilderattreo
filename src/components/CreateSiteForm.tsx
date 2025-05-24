@@ -228,7 +228,7 @@ export default function CreateSiteForm({ onSubmit, isSubmitting, error }: Create
                 placeholder="your-company"
               />
               <span className="inline-flex items-center px-3 rounded-r-md border-0 bg-gray-50 text-gray-500 sm:text-sm">
-                .localhost:3000
+                .servicecenterkolkata24x7.com
               </span>
             </div>
             {errors.slug && (

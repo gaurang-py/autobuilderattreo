@@ -26,6 +26,45 @@ async function main() {
     } else {
       console.log('Admin user already exists');
     }
+
+    // Create sample tenant
+    const existingTenant = await prisma.tenant.findUnique({
+      where: { slug: 'demo' },
+    });
+
+    if (!existingTenant) {
+      const tenant = await prisma.tenant.create({
+        data: {
+          slug: 'demo',
+          companyName: 'Demo Company',
+          industry: 'Technology',
+          template: 'professional',
+          logoUrl: 'https://via.placeholder.com/150',
+          settings: {},
+          pages: {
+            create: {
+              homeTitle: 'Welcome to Demo Company',
+              tagline: 'Your Trusted Technology Partner',
+              aboutUs: 'We are a leading technology company dedicated to providing innovative solutions.',
+              services: JSON.stringify([
+                {
+                  title: 'Web Development',
+                  description: 'Custom web applications and websites'
+                },
+                {
+                  title: 'Mobile Apps',
+                  description: 'iOS and Android development'
+                }
+              ]),
+              contactBlurb: 'Get in touch with us for your technology needs'
+            }
+          }
+        }
+      });
+      console.log(`Created demo tenant with ID: ${tenant.id}`);
+    } else {
+      console.log('Demo tenant already exists');
+    }
   } catch (error) {
     console.error('Error seeding database:', error);
   } finally {
