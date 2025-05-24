@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   
   const isLocalhost = host.includes('localhost')
   const isVercelDomain = host.endsWith('.vercel.app')
-  const isRootDomain = host === 'servicecenterkolkata24x7.com' || host === 'www.servicecenterkolkata24x7.com'
+  const isRootDomain = host === 'servicecenterkolkata24x7.com' || host === 'www.servicecenterkolkata24x7.com' || host === 'authoriseservice.center' || host === 'www.authoriseservice.center'
 
   // Detect actual subdomains only (e.g., client1.servicecenterkolkata24x7.com)
   const parts = host.split('.')
